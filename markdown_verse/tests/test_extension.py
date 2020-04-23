@@ -7,9 +7,6 @@ from markdown_verse.extension import VerseExtension
 class TestExtension(TestCase):
     def test_default_config(self):
         source = """
-Hello World
-===========
-
 '''
 Arctic fox's den
 adorned with flowers and snow
@@ -18,10 +15,9 @@ garden in winter
         """.strip()
 
         expected = """
-<h1>Hello World</h1>
-<p><div class="verse">Arctic fox's den
+<div class="verse">Arctic fox's den
 adorned with flowers and snow
-garden in winter</div></p>
+garden in winter</div>
         """.strip()
 
         html = markdown(source, extensions=[VerseExtension()])
@@ -32,9 +28,6 @@ garden in winter</div></p>
 
     def test_custom_config(self):
         source = """
-Hello World
-===========
-
 '''
 Arctic fox's den
 adorned with flowers and snow
@@ -43,12 +36,46 @@ garden in winter
         """.strip()
 
         expected = """
-<h1>Hello World</h1>
-<p><verse>Arctic fox's den
+<verse>Arctic fox's den
 adorned with flowers and snow
-garden in winter</verse></p>
+garden in winter</verse>
         """.strip()
 
         html = markdown(source, extensions=[VerseExtension(
-            tag_tuple=('<verse>', '</verse>'))])
+            tag='verse', tag_class='')])
+        self.assertEqual(html, expected)
+
+    def test_mixed(self):
+        self.maxDiff = None
+        source = """
+Some text.
+
+    '''
+    Arctic fox's den
+    adorned with flowers and snow
+    garden in winter
+    '''
+
+'''
+Arctic fox's den
+adorned with flowers and snow
+garden in *winter*
+'''
+        """.strip()
+
+        expected = """
+<p>Some text.</p>
+<pre><code>'''
+Arctic fox's den
+adorned with flowers and snow
+garden in winter
+'''
+</code></pre>
+<verse>Arctic fox's den
+adorned with flowers and snow
+garden in <em>winter</em></verse>
+        """.strip()
+
+        html = markdown(source, extensions=[VerseExtension(
+            tag='verse', tag_class='')])
         self.assertEqual(html, expected)
