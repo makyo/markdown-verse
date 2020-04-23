@@ -31,28 +31,38 @@ class VerseExtension(Extension):
 
 class VerseProcessor(BlockProcessor):
 
-    VERSE_RE = re.compile(r'''^(?P<quotes>'{3})\n(?P<body>.*?)\n(?P=quotes)$''',
+    VERSE_RE = re.compile(r'''(^|\n)(?P<quotes>'{3})\n(?P<body>.*?)\n(?P=quotes)($|\n)''',
                           re.DOTALL | re.MULTILINE)
+    START_RE = re.compile(r'''(^|\n)'{3}''', re.DOTALL | re.MULTILINE)
+    QUOTES_RE = re.compile(r'''\n?'{3}\n?''')
     def __init__(self, tag, tag_class, *args, **kwargs):
         self.tag = tag
         self.tag_class = tag_class
+        self.in_verse = False
+        self.curr_verse = None
         super().__init__(*args, **kwargs)
 
     def test(self, parent, block):
-        return self.VERSE_RE.search(block)
+        return self.in_verse or self.START_RE.search(block)
 
     def run(self, parent, blocks):
+        was_in_verse = self.in_verse
         sibling = self.lastChild(parent)
         block = blocks.pop(0)
-        m = self.VERSE_RE.search(block)
-        if m:
-            block = m.group('body')
-            el = etree.SubElement(parent, self.tag)
-            el.text = block
-            if self.tag_class:
-                el.set('class', self.tag_class)
-        else:
-            el = sibling
+        if block.endswith("'''"):
+            self.in_verse = False
+        block = self.QUOTES_RE.sub('', block)
+        if block:
+            if not was_in_verse:
+                el = etree.SubElement(parent, self.tag)
+                el.text = ''
+                if self.tag_class:
+                    el.set('class', self.tag_class)
+                self.in_verse = True
+            else:
+                el = sibling
+                el.text += '\n\n'
+            el.text += block
 
 def makeExtension(**kwargs):
     return VerseExtension(**kwargs)

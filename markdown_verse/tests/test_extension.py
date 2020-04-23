@@ -60,7 +60,11 @@ Some text.
 Arctic fox's den
 adorned with flowers and snow
 garden in *winter*
+
+Maybe.
 '''
+
+Bottom text.
         """.strip()
 
         expected = """
@@ -73,7 +77,9 @@ garden in winter
 </code></pre>
 <verse>Arctic fox's den
 adorned with flowers and snow
-garden in <em>winter</em></verse>
+garden in <em>winter</em>
+
+Maybe.</verse><p>Bottom text.</p>
         """.strip()
 
         html = markdown(source, extensions=[VerseExtension(

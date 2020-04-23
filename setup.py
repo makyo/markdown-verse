@@ -6,7 +6,7 @@ with open('README.md') as f:
 
 setup(
     name='markdown_verse',
-    version='0.1.1',
+    version='0.1.2',
     description='Markdown extension for verse',
     long_description=long_description,
     long_description_content_type='text/markdown',
