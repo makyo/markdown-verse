@@ -47,10 +47,14 @@ class VerseProcessor(BlockProcessor):
 
     def run(self, parent, blocks):
         was_in_verse = self.in_verse
+        single_stanza = False
         sibling = self.lastChild(parent)
         block = blocks.pop(0)
         if block.endswith("'''"):
-            self.in_verse = False
+            if self.in_verse:
+                self.in_verse = False
+            else:
+                single_stanza = True
         block = self.QUOTES_RE.sub('', block)
         if block:
             if not was_in_verse:
@@ -58,7 +62,8 @@ class VerseProcessor(BlockProcessor):
                 el.text = ''
                 if self.tag_class:
                     el.set('class', self.tag_class)
-                self.in_verse = True
+                if not single_stanza:
+                    self.in_verse = True
             else:
                 el = sibling
                 el.text += '\n\n'

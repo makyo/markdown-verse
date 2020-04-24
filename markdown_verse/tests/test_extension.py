@@ -57,11 +57,15 @@ Some text.
     '''
 
 '''
+Some poems are...
+
+...multiple stanzas
+'''
+
+'''
 Arctic fox's den
 adorned with flowers and snow
 garden in *winter*
-
-Maybe.
 '''
 
 Bottom text.
@@ -75,11 +79,11 @@ adorned with flowers and snow
 garden in winter
 '''
 </code></pre>
-<verse>Arctic fox's den
-adorned with flowers and snow
-garden in <em>winter</em>
+<verse>Some poems are...
 
-Maybe.</verse><p>Bottom text.</p>
+...multiple stanzas</verse><verse>Arctic fox's den
+adorned with flowers and snow
+garden in <em>winter</em></verse><p>Bottom text.</p>
         """.strip()
 
         html = markdown(source, extensions=[VerseExtension(
