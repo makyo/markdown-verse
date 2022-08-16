@@ -20,7 +20,7 @@ class VerseExtension(Extension):
         }
         super(VerseExtension, self).__init__(**kwargs)
 
-    def extendMarkdown(self, md, what):
+    def extendMarkdown(self, md):
         md.parser.blockprocessors.register(
             VerseProcessor(
                 self.getConfig('tag'),
